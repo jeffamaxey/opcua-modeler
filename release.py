@@ -7,11 +7,10 @@ def bump_version():
         s = f.read()
     m = re.search(r'version="(.*)\.(.*)\.(.*)",', s)
     v1, v2, v3 = m.groups()
-    oldv = "{}.{}.{}".format(v1, v2, v3)
-    newv = "{}.{}.{}".format(v1, v2, str(int(v3) + 1))
-    print("Current version is: {}, write new version, ctrl-c to exit".format(oldv))
-    ans = input(newv)
-    if ans:
+    oldv = f"{v1}.{v2}.{v3}"
+    newv = f"{v1}.{v2}.{str(int(v3) + 1)}"
+    print(f"Current version is: {oldv}, write new version, ctrl-c to exit")
+    if ans := input(newv):
         newv = ans
     s = s.replace(oldv, newv)
     with open("setup.py", "w") as f:
@@ -25,16 +24,16 @@ def release():
     if ans in ("", "y", "yes"):
         os.system("git add setup.py")
         os.system("git commit -m 'new release'")
-        os.system("git tag {}".format(v))
+        os.system(f"git tag {v}")
         ans = input("change committed, push to server?(Y/n)")
         if ans in ("", "y", "yes"):
             os.system("git push")
             os.system("git push --tags")
         ans = input("upload to pip?(Y/n)")
-        if ans in ("", "y", "yes"):
-            os.system("rm -r dist/*")
-            os.system("python setup.py sdist build")
-            os.system("twine dist/*")
+    if ans in ("", "y", "yes"):
+        os.system("rm -r dist/*")
+        os.system("python setup.py sdist build")
+        os.system("twine dist/*")
 
 
 if __name__ == "__main__":

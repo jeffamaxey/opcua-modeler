@@ -233,13 +233,12 @@ class ModelManager(QObject):
 
     def save_ua_model(self, path=None):
         path = self._get_path(path)
-        model_path = path + ".uamodel"
+        model_path = f"{path}.uamodel"
         logger.info("Saving model to %s", model_path)
         etree = Et.ElementTree(Et.Element('UAModel'))
         node_el = Et.SubElement(etree.getroot(), "Model")
-        node_el.attrib["path"] = os.path.basename(path) + ".xml"
-        c_node = self.modeler.tree_ui.get_current_node()
-        if c_node:
+        node_el.attrib["path"] = f"{os.path.basename(path)}.xml"
+        if c_node := self.modeler.tree_ui.get_current_node():
             node_el.attrib["current_node"] = c_node.nodeid.to_string()
         for refpath in self.modeler.nodesets_ui.nodesets:
             node_el = Et.SubElement(etree.getroot(), "Reference")
@@ -252,9 +251,8 @@ class ModelManager(QObject):
             for node in new_nodes:
                 if node not in self.new_nodes:
                     self.new_nodes.append(node)
-        else:
-            if new_nodes not in self.new_nodes:
-                self.new_nodes.append(new_nodes)
+        elif new_nodes not in self.new_nodes:
+            self.new_nodes.append(new_nodes)
         self.modeler.tree_ui.reload_current()
         self.modeler.show_refs()
         self.modified = True
@@ -262,9 +260,8 @@ class ModelManager(QObject):
     def add_method(self, *args):
         logger.info("Creating method type with args: %s", args)
         parent = self.modeler.tree_ui.get_current_node()
-        new_nodes = []
         new_node = parent.add_method(*args)
-        new_nodes.append(new_node)
+        new_nodes = [new_node]
         new_nodes.extend(new_node.get_children())
         self._after_add(new_nodes)
         return new_nodes

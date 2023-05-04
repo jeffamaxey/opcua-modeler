@@ -210,8 +210,7 @@ class ModelManagerUI(QObject):
 
     @trycatchslot
     def copy(self):
-        node = self.modeler.get_current_node()
-        if node:
+        if node := self.modeler.get_current_node():
             self._copy_clipboard = node
 
     @trycatchslot
@@ -409,8 +408,7 @@ class UaModeler(QMainWindow):
     def open_recent_files(self):
         if not self.model_mgr.try_close_model():
             return
-        action = self.sender()
-        if action:
+        if action := self.sender():
             path = action.data()
             self.model_mgr.open_file(path)
             self.update_recent_files(path)
@@ -475,8 +473,7 @@ class UaModeler(QMainWindow):
         self._contextMenu.addAction(self.ui.actionAddDataType)
 
     def _show_context_menu_tree(self, position):
-        node = self.tree_ui.get_current_node()
-        if node:
+        if node := self.tree_ui.get_current_node():
             self._contextMenu.exec_(self.ui.treeView.viewport().mapToGlobal(position))
 
     def _restore_ui_geometri(self):
@@ -489,7 +486,7 @@ class UaModeler(QMainWindow):
         self.ui.splitterCenter.restoreState(self.settings.value("splitter_center", bytearray()))
 
     def update_title(self, path):
-        self.setWindowTitle("FreeOpcUa Modeler " + str(path))
+        self.setWindowTitle(f"FreeOpcUa Modeler {str(path)}")
 
     def show_error(self, msg):
         self.ui.statusBar.show()
@@ -505,16 +502,14 @@ class UaModeler(QMainWindow):
 
     @trycatchslot
     def show_refs(self, idx=None):
-        node = self.get_current_node(idx)
-        if node:
+        if node := self.get_current_node(idx):
             self.refs_ui.show_refs(node)
 
     @trycatchslot
     def show_attrs(self, idx=None):
         if not isinstance(idx, QModelIndex):
             idx = None
-        node = self.get_current_node(idx)
-        if node:
+        if node := self.get_current_node(idx):
             self.attrs_ui.show_attrs(node)
 
     def nodesets_change(self, data):

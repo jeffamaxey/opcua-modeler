@@ -14,8 +14,7 @@ from uawidgets.new_node_dialogs import NewNodeBaseDialog, NewUaObjectDialog, New
 @pytest.fixture(scope="function")
 def modeler():
     app = QApplication(sys.argv)
-    modeler = UaModeler()
-    yield modeler
+    yield UaModeler()
     #sys.exit(0)
 
 
